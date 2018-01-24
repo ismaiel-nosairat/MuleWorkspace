@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+
+	<spring:beans>
+		<spring:bean name="b1" class="MyEndpoint" ></spring:bean>
+	</spring:beans>
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8081" basePath="/end1" doc:name="HTTP Listener Configuration"/>
+    <flow name="javainvoketestFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/my" doc:name="HTTP"/>
+        <invoke object-ref="b1" method="methodA" doc:name="Invoke"/>
+        <echo-component doc:name="Echo"/>
+        <invoke object-ref="b1" method="methodB" methodArguments="#[message.inboundProperties.'http.query.params'.['is']]" doc:name="invoke"/>
+        <echo-component doc:name="Echo"/>
+    </flow>
+</mule>
